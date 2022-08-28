@@ -134,10 +134,20 @@
 				},
 			};
 
+			let todosStorge = {
+				fetch: function () {
+					var todos = JSON.parse(localStorage.getItem('todos') || '[]');
+					return todos;
+				},
+				save: function (todo) {
+					localStorage.setItem('todos', JSON.stringify(todo));
+				},
+			};
+
 			var app = new Vue({
 				el: '#app',
 				data: {
-					todos: [],
+					todos: todosStorge.fetch(),
 					completed: [],
 					obj: { name: '', checked: false },
 					newItem: '',
@@ -183,6 +193,14 @@
 							this.todos.splice(index, 1);
 						}
 						this.editTodo = null;
+					},
+				},
+				watch: {
+					todos: {
+						handler: function (todos) {
+							todosStorge.save(todos);
+						},
+						deep: true,
 					},
 				},
 			});
