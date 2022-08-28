@@ -8,3 +8,6 @@ This app is Todo app to add , remove and track your todos you can update your to
 Vue js , Bootstrap5
 
 ```
+
+### Live Preview :
+https://omniaeladawy.github.io/Todo-app-vue-js/
