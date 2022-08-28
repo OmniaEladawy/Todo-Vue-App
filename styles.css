@@ -1,0 +1,56 @@
+#page-header {
+    color : #ff23235e ;
+    font-size : 70px
+}
+
+.todo-input{
+    width : 100%;
+    border: none;
+}
+
+.todo-input:focus{
+    outline: none;
+}
+
+.todo-input::placeholder {
+    color: rgba(128, 128, 128, 0.404);
+    font-size: 20px;
+    font-style: italic;
+}
+
+#arrow {
+    color: rgba(128, 128, 128, 0.404);
+    align-self: center;
+    cursor: pointer;
+}
+
+.card {
+    width: 50rem;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
+
+.check {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #9797974f;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.checked {
+    text-decoration: line-through;
+    color: #a4a4a4b8;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer li {
+    display: inline-block;
+    margin: 10px 20px 0 20px;
+    cursor: pointer;
+}
+
+
