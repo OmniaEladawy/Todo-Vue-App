@@ -53,4 +53,23 @@
     cursor: pointer;
 }
 
+.selected {
+    border: 1px solid #989696;
+    border-radius: 7px;
+    padding: 2px 5px;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+}
 
+.edit {
+    display: block;
+    width: 97%;
+    outline: none;
+    height: 40px;
+    display: none;
+    position : absolute;
+
+}
+
+.editting .edit{
+    display: block;
+}

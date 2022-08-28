@@ -27,7 +27,6 @@
 						class="bi bi-caret-down-fill"
 						viewBox="0 0 16 16"
 						id="arrow"
-						@click="toggle()"
 					>
 						<path
 							d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
@@ -43,8 +42,10 @@
 				</div>
 				<ul class="list-group list-group-flush">
 					<li
-						v-for="(item,index) in todos"
+						v-for="(item,index) in filtered"
 						class="list-group-item p-3 border-2 d-flex"
+						:class="{editting:item===editTodo}"
+						@dblclick="editingTodo(item)"
 					>
 						<div @click="check(index,item)" class="rounded-circle check">
 							<svg
@@ -62,7 +63,7 @@
 								/>
 							</svg>
 						</div>
-						<span :id="`item${index+1}`" class="mx-2 fw-bold">
+						<span class="mx-2 fw-bold" :class="{checked:item.checked}">
 							{{item.name}}
 						</span>
 						<svg
@@ -79,20 +80,60 @@
 								d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"
 							/>
 						</svg>
+						<input
+							type="text"
+							class="edit"
+							v-model="item.name"
+							@keyup.enter="doneEditting()"
+						/>
 					</li>
 				</ul>
 				<div class="footer">
 					<ul class="d-flex">
 						<li class="me-auto">{{itemsLeft}} items left</li>
-						<li>All</li>
-						<li>Active</li>
-						<li>Completed</li>
-						<li class="ms-auto">Clear Completed</li>
+						<li
+							@click="visibility='all'"
+							:class="{selected:visibility==='all'}"
+						>
+							All
+						</li>
+						<li
+							@click="visibility='active'"
+							:class="{selected:visibility==='active'}"
+						>
+							Active
+						</li>
+						<li
+							@click="visibility='completed'"
+							:class="{selected:visibility==='completed'}"
+						>
+							Completed
+						</li>
+						<li @click="deleteCompleted()" class="ms-auto">Clear Completed</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 		<script>
+			let filters = {
+				list: function (todos) {
+					return todos;
+				},
+				all: function (todos) {
+					return todos;
+				},
+				active: function (todos) {
+					return todos.filter((el) => {
+						return !el.checked;
+					});
+				},
+				completed: function (todos) {
+					return todos.filter((el) => {
+						return el.checked;
+					});
+				},
+			};
+
 			var app = new Vue({
 				el: '#app',
 				data: {
@@ -100,6 +141,8 @@
 					completed: [],
 					obj: { name: '', checked: false },
 					newItem: '',
+					visibility: 'list',
+					editTodo: null,
 				},
 				computed: {
 					itemsLeft: function () {
@@ -108,12 +151,12 @@
 						});
 						return arr.length;
 					},
+					filtered: function () {
+						return filters[this.visibility](this.todos);
+					},
 				},
 				methods: {
 					deleteItem: function (index) {
-						document
-							.getElementById(`item${index + 1}`)
-							.classList.remove('checked');
 						this.todos.splice(index, 1);
 					},
 					addItem: function () {
@@ -125,19 +168,21 @@
 						}
 					},
 					check: function (index, item) {
-						this.todos[index].checked = true;
-						document
-							.getElementById(`item${index + 1}`)
-							.classList.add('checked');
+						this.todos[index].checked = !this.todos[index].checked;
 						this.completed.push(item);
 					},
-					toggle: function () {
-						this.todos.forEach((element, index) => {
-							element.checked = !element.checked;
-							document
-								.getElementById(`item${index + 1}`)
-								.classList.toggle('checked');
-						});
+					deleteCompleted: function () {
+						this.todos = filters.active(this.todos);
+					},
+					editingTodo: function (todo) {
+						this.editTodo = todo;
+					},
+					doneEditting: function () {
+						if (this.editTodo.name === '') {
+							let index = this.todos.indexOf(this.editTodo);
+							this.todos.splice(index, 1);
+						}
+						this.editTodo = null;
 					},
 				},
 			});
